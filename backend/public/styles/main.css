@@ -1,0 +1,184 @@
+:root {
+  /* --- Brand Colors (Core Identity) --- */
+  --color-brand-primary: #121a18; /* Tiefes Waldgrün - Hauptfarbe */
+  --color-brand-secondary: #b89c6f; /* Gedämpftes Gold - Akzent/Sekundär */
+
+  /* --- Surface Colors (Backgrounds, Cards, Elements) --- */
+  --color-surface: #f5f1e6; /* Cremiges Elfenbein - Haupt-Hintergrund */
+  --color-surface-dark: #ececec; /* Leicht dunklerer Hintergrund für Kontrastbereiche */
+  --color-surface-light: #ffffff; /* Reinweiß für hervorstehende Elemente/Karten */
+
+  /* --- Text & Icon "On-Colors" (For readability on colored backgrounds) --- */
+  --color-on-brand-primary: #ffffff; /* Weiß auf Tiefem Waldgrün */
+  --color-on-brand-secondary: #2e2e2e; /* Dunkles Grau auf Gedämpftem Gold (oder #FFFFFF bei starkem Kontrast) */
+  --color-on-surface: #36454f; /* Dunkles Anthrazit auf Cremigem Elfenbein/Weiß */
+  --color-on-surface-light: #5a5a5a; /* Mittleres Grau für sekundären Text auf hellen Flächen */
+
+  /* --- Accent Colors (Functional & UI elements) --- */
+  --color-accent-soft-green: #87a98a; /* Sanftes Salbeigrün - Dekorative Akzente */
+  --color-accent-error: #d32f2f; /* Rot für Fehlermeldungen */
+  --color-accent-success: #388e3c; /* Grün für Erfolgsmeldungen */
+
+  /* --- Neutral/Utility Colors --- */
+  --color-text-primary: var(--color-on-surface); /* Haupttextfarbe (Standard) */
+  --color-text-secondary: var(
+    --color-on-surface-light
+  ); /* Sekundärer Text, weniger prominent */
+  --color-border: #d1d1d1; /* Allgemeine Rahmenfarbe */
+  --color-shadow: rgba(0, 0, 0, 0.1); /* Standard Schattenfarbe */
+}
+
+body,
+html {
+  margin: 0;
+
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  background-color: var(--color-brand-primary);
+  color: var(--color-on-brand-primary);
+  transition: background-color 1s ease;
+  scroll-behavior: smooth;
+
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.hero {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.hero-image {
+  background-image: url("http://localhost:9002/hotelimpression/header.webp");
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100vh; /* Oder eine feste Höhe, z.B. 700px */
+  position: relative; /* Wichtig für das Pseudoelement */
+  overflow: hidden; /* Sicherstellen, dass der Verlauf nicht überläuft */
+  filter: grayscale(40%) brightness(0.8) contrast(1.1) sepia(10%);
+  transition: filter 0.5s ease;
+}
+
+.hero-image::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 200px; /* Höhe des Verlaufs - experimentiere hiermit */
+  /* Der Verlauf: von transparent zu deiner Content-Hintergrundfarbe */
+  background: linear-gradient(
+    to top,
+    var(--color-brand-primary) 0%,
+    rgba(18, 26, 24, 0) 100%
+  );
+  z-index: 2; /* Über dem Bild, aber unter dem Header-Inhalt (z.B. Hotelname) */
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: center;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-overlay h1 {
+  font-size: 4rem;
+  font-weight: 500;
+  font-family: "Funnel Display", sans-serif;
+  color: var(--color-brand-secondary);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  margin-top: 20vh;
+}
+
+.display-large {
+  font-size: 4.5rem;
+  font-weight: 500;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  color: #fff;
+  letter-spacing: 0.03em;
+}
+
+.fade-item {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.fade-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section {
+  position: relative;
+  z-index: 2000;
+}
+
+section.content {
+  min-height: 40vw;
+  font-size: 1.5rem;
+  padding: 100px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.info-wrapper {
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  text-align: center;
+  align-items: center;
+  justify-items: center;
+}
+
+.info-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  text-align: start;
+  padding: 100px 50px;
+  align-items: start;
+  gap: 20px;
+}
+
+.info-image {
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: auto;
+}
+
+.info-image img {
+  border-radius: 16px;
+  width: 70%;
+  height: 70%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+#impressionIframe {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+span a {
+  border-radius: 2px;
+  color: var(--color-on-brand-secondary);
+  background-color: var(--color-brand-secondary);
+  padding: 5px 10px;
+  text-decoration: none;
+}

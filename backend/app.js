@@ -18,6 +18,20 @@ app.get("/", async (req, res) => {
   res.render("layout.ejs", { title: "Start" });
 });
 
+app.get("/main", async (req, res) => {
+  try {
+    // console.log(`Lade Impressionen von ${impressionServiceUrl}/html`);
+    // const html = await fetch(`${impressionServiceUrl}/html`).then((r) =>
+    //   r.text()
+    // );
+    // console.log("Impressionen erfolgreich geladen.");
+    // res.render("main.ejs", { title: "Start", impressions: html });
+    res.render("main.ejs", { title: "Start" });
+  } catch (err) {
+    res.status(500).send("Fehler beim Laden der Microservice-Seite.");
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Backend läuft auf http://localhost:${PORT}`);
 });
