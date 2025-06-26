@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "80:80"
+    networks:
+      - appnet
+    volumes:
+      - ./backend:/app
+
+networks:
+  appnet:
