@@ -1,7 +1,7 @@
 // File containing especially styling and animations for the main page
 
+// Switching the background color and text color based on section visibility
 const sections = document.querySelectorAll(".section");
-
 const sectionsObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
@@ -15,13 +15,12 @@ const sectionsObserver = new IntersectionObserver(
   },
   { threshold: 0.5 }
 );
-
 sections.forEach((section) => {
   sectionsObserver.observe(section);
 });
 
+// Fade-in effect for items in the main section
 const items = document.querySelectorAll(".fade-item");
-
 const itemsObserver = new IntersectionObserver(
   (entries, obs) => {
     entries.forEach((entry) => {

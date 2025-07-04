@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .impressions-heading {
+        font-size: 70px;
+        margin-bottom: 20px;
+        align-self: start;
+      }
+
+      .video-gallery {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        align-items: stretch;
+        width: 100%;
+        height: 100%;
+      }
+
+      .video-container {
+        padding-bottom: 40%;
+        height: 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        overflow: hidden;
+        border-radius: 16px;
+        transition: flex 0.5s ease, filter 0.5s ease;
+        position: relative;
+        aspect-ratio: auto;
+      }
+
+      .hover-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        border-radius: 16px;
+        top: 0;
+        left: 0;
+        position: absolute;
+        transition: transform 0.5s ease;
+        filter: grayscale(40%) brightness(0.8) contrast(1.1) sepia(10%);
+      }
+
+      .video-gallery:hover .video-container:hover {
+        flex: 3;
+        filter: brightness(1.1);
+        z-index: 2;
+      }
+
+      .video-gallery:hover .video-container:hover .hover-video {
+        transform: scale(1.02);
+      }
+
+      @media (max-width: 768px) {
+        .video-container {
+          flex: 1 1 90%;
+          padding-bottom: 50.625%;
+        }
+        .video-container:hover {
+          flex-grow: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Content -->
+    <span class="fade-item impressions-heading"
+      >Naturerlebnisse in Bewegung</span
+    >
+    <div class="video-gallery fade-item">
+      <div class="video-container">
+        <video
+          class="hover-video"
+          muted
+          playsinline
+          loop
+          poster="<%= minioUrl %>/1677.png"
+        >
+          <source
+            src="<%= minioUrl %>/fotor-ai-202506271677.mp4"
+            type="video/mp4"
+          />
+          Dein Browser unterstützt das Video-Tag nicht.
+        </video>
+      </div>
+
+      <div class="video-container">
+        <video
+          class="hover-video"
+          muted
+          playsinline
+          loop
+          poster="<%= minioUrl %>/1669.png"
+        >
+          <source
+            src="<%= minioUrl %>/fotor-ai-202506271669.mp4"
+            type="video/mp4"
+          />
+          Dein Browser unterstützt das Video-Tag nicht.
+        </video>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const videoContainers = document.querySelectorAll(".video-container");
+
+        videoContainers.forEach((container) => {
+          const video = container.querySelector(".hover-video");
+
+          const playVideo = () => {
+            if (video.paused || video.ended) {
+              const playPromise = video.play();
+              if (playPromise !== undefined) {
+                playPromise
+                  .then(() => {
+                    // Optional: Wenn du einen Ladeindikator hattest, könntest du ihn hier ausblenden
+                  })
+                  .catch((error) => {
+                    console.warn(
+                      "Video konnte nicht automatisch abgespielt werden (Autoplay blockiert):",
+                      error
+                    );
+                    // Hier könntest du z.B. ein sichtbares Play-Icon einblenden,
+                    // das der Nutzer klicken muss, um das Video zu starten.
+                  });
+              }
+            }
+          };
+
+          const pauseVideo = () => {
+            // Wenn das Video pausiert und auf 0 zurückgesetzt werden soll, wenn der Hover endet:
+            video.pause();
+            video.currentTime = 0; // Setzt das Video zurück zum Startbild (Poster)
+          };
+
+          container.addEventListener("mouseenter", playVideo);
+          container.addEventListener("mouseleave", pauseVideo);
+        });
+      });
+    </script>
+  </body>
+</html>

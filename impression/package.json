@@ -1,0 +1,21 @@
+{
+  "name": "impression",
+  "main": "app.js",
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "express": "^4.21.2",
+    "minio": "^8.0.5",
+    "path": "^0.12.7",
+    "url": "^0.11.4"
+  },
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

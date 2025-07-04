@@ -6,6 +6,15 @@ import { fileURLToPath } from "url";
 const app = express();
 const PORT = 80;
 
+const impressionServiceUrl = process.env.IMPRESSION_SERVICE_URL;
+const roomServiceUrl = process.env.ROOM_SERVICE_PUBLIC_BASE_URL;
+const eventServiceUrl = process.env.EVENT_SERVICE_PUBLIC_BASE_URL;
+const weatherServiceUrl = process.env.WEATHER_SERVICE_PUBLIC_BASE_URL;
+
+console.log(`Impression Service URL: ${impressionServiceUrl}`);
+console.log(`Room Service URL: ${roomServiceUrl}`);
+console.log(`Event Service URL: ${eventServiceUrl}`);
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -15,23 +24,36 @@ app.use(express.static("public"));
 
 // home route impressions
 app.get("/", async (req, res) => {
-  res.render("layout.ejs", { title: "Start" });
+  res.render("layout.ejs", {
+    roomServiceUrl: roomServiceUrl,
+    eventServiceUrl: eventServiceUrl,
+    weatherServiceUrl: weatherServiceUrl,
+  });
 });
 
 app.get("/main", async (req, res) => {
   try {
-    // console.log(`Lade Impressionen von ${impressionServiceUrl}/html`);
-    // const html = await fetch(`${impressionServiceUrl}/html`).then((r) =>
-    //   r.text()
-    // );
-    // console.log("Impressionen erfolgreich geladen.");
-    // res.render("main.ejs", { title: "Start", impressions: html });
-    res.render("main.ejs", { title: "Start" });
+    const impressions = await fetch(`${impressionServiceUrl}/impressions`).then(
+      (r) => r.text()
+    );
+    console.log("Impressionen erfolgreich geladen.");
+
+    const media = await fetch(`${impressionServiceUrl}/media`).then((r) =>
+      r.text()
+    );
+
+    // render the main page with impressions and media
+    res.render("main.ejs", {
+      title: "Start",
+      impressions: impressions,
+      media: media,
+      minioUrl: `http://localhost:${process.env.MINIO_PORT}/hotelimages`,
+    });
   } catch (err) {
-    res.status(500).send("Fehler beim Laden der Microservice-Seite.");
+    res.status(500).send("Error loading impressions or media: " + err.message);
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`Backend läuft auf http://localhost:${PORT}`);
+  console.log(`Backend is running http://localhost:${PORT}`);
 });

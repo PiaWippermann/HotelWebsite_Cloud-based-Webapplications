@@ -8,11 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap"
       rel="stylesheet"
     />
-    <!-- <link rel="icon" href="/favicon.ico" type="image/x-icon" /> -->
-    <!-- <link
+    <link
       rel="icon"
       type="image/png"
       href="/assets/favicon-16x16.png"
@@ -29,7 +28,7 @@
       type="image/png"
       href="/assets/favicon-96x96.png"
       sizes="96x96"
-    /> -->
+    />
     <link
       rel="icon"
       type="image/png"
@@ -37,7 +36,13 @@
       sizes="192x192"
     />
 
-    <script></script>
+    <script>
+      // These variables are set by the server-side rendering
+      // and will be used in the client-side script
+      window.roomServiceUrl = "<%= roomServiceUrl %>";
+      window.eventServiceUrl = "<%= eventServiceUrl %>";
+      window.weatherServiceUrl = "<%= weatherServiceUrl %>";
+    </script>
   </head>
   <body>
     <header class="main-header">
@@ -45,9 +50,7 @@
     </header>
 
     <nav id="overlay" class="overlay-nav">
-      <button id="close-btn" class="close-btn" aria-label="Menü schließen">
-        ×
-      </button>
+      <button id="close-btn" aria-label="Menü schließen">×</button>
 
       <div class="nav-content">
         <ul id="main-nav-list" class="main-nav-list">
@@ -55,13 +58,13 @@
             <a href="javascript:loadMain()">Startseite</a>
           </li>
           <li class="item-nav">
-            <a href="javascript:showConfigurationModels()">Konfiguration</a>
+            <a href="javascript:loadRooms()">Zimmer</a>
           </li>
           <li class="item-nav">
-            <a href="javascript:loadRoute()">Reise Route</a>
+            <a href="javascript:loadEvents()">Events</a>
           </li>
           <li class="item-nav">
-            <a href="javascript:loadOnlineShop()">Online Shop</a>
+            <a href="javascript:loadWeather()">Wetter</a>
           </li>
         </ul>
 

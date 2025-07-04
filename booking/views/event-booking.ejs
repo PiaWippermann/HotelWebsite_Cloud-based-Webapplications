@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* --- Brand Colors (Core Identity) --- */
+        --color-brand-primary: #121a18; /* Tiefes Waldgrün - Hauptfarbe */
+        --color-brand-secondary: #b89c6f; /* Gedämpftes Gold - Akzent/Sekundär */
+
+        /* --- Surface Colors (Backgrounds, Cards, Elements) --- */
+        --color-surface: #f5f1e6; /* Cremiges Elfenbein - Haupt-Hintergrund */
+        --color-surface-dark: #ececec; /* Leicht dunklerer Hintergrund für Kontrastbereiche */
+        --color-surface-light: #ffffff; /* Reinweiß für hervorstehende Elemente/Karten */
+
+        /* --- Text & Icon "On-Colors" (For readability on colored backgrounds) --- */
+        --color-on-brand-primary: #ffffff; /* Weiß auf Tiefem Waldgrün */
+        --color-on-brand-secondary: #2e2e2e; /* Dunkles Grau auf Gedämpftem Gold (oder #FFFFFF bei starkem Kontrast) */
+        --color-on-surface: #36454f; /* Dunkles Anthrazit auf Cremigem Elfenbein/Weiß */
+        --color-on-surface-light: #5a5a5a; /* Mittleres Grau für sekundären Text auf hellen Flächen */
+
+        /* --- Accent Colors (Functional & UI elements) --- */
+        --color-accent-soft-green: #87a98a; /* Sanftes Salbeigrün - Dekorative Akzente */
+        --color-accent-error: #d32f2f; /* Rot für Fehlermeldungen */
+        --color-accent-success: #388e3c; /* Grün für Erfolgsmeldungen */
+
+        /* --- Neutral/Utility Colors --- */
+        --color-text-primary: var(
+          --color-on-surface
+        ); /* Haupttextfarbe (Standard) */
+        --color-text-secondary: var(
+          --color-on-surface-light
+        ); /* Sekundärer Text, weniger prominent */
+        --color-border: #d1d1d1; /* Allgemeine Rahmenfarbe */
+        --color-shadow: rgba(0, 0, 0, 0.1); /* Standard Schattenfarbe */
+      }
+
+      #event-container {
+        border-radius: 16px;
+      }
+
+      #booking-close-btn {
+        font-size: 2rem;
+        color: var(--color-on-brand-primary);
+        background: none;
+        border: none;
+        position: absolute;
+        top: 1rem;
+        right: 2rem;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body></body>
+</html>

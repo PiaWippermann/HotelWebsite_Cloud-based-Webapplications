@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/weather.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="weather-header">
+      <h1>Palais Vert - Aktuelle Wetteraussichten</h1>
+    </div>
+
+    <div class="weather-container">
+      <h2>Aktuelles Wetter</h2>
+      <div id="currentWeatherContent">
+        <p class="loading-message">Lade aktuelle Wetterdaten...</p>
+      </div>
+    </div>
+
+    <div class="forecast-container">
+      <h2>Wettervorhersage (Nächste 7 Tage)</h2>
+      <div id="forecastContent">
+        <p class="loading-message">Lade Wettervorhersage...</p>
+      </div>
+    </div>
+
+    <script>
+      const backendServiceUrl = window.location.origin;
+
+      async function fetchWeatherData(city) {
+        const currentWeatherDiv = document.getElementById(
+          "currentWeatherContent"
+        );
+        const forecastDiv = document.getElementById("forecastContent");
+
+        currentWeatherDiv.innerHTML =
+          '<p class="loading-message">Lade aktuelle Wetterdaten...</p>';
+        forecastDiv.innerHTML =
+          '<p class="loading-message">Lade Wettervorhersage...</p>';
+
+        // Aktuelles Wetter abrufen
+        try {
+          const response = await fetch(`/api/current-weather/${city}`);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              errorData.message || "Fehler beim Laden der aktuellen Wetterdaten"
+            );
+          }
+          const data = await response.json();
+          currentWeatherDiv.innerHTML = `
+            <h2>${data.city}, ${data.country}</h2>
+            <p class="description">
+                <img src="http://openweathermap.org/img/wn/${
+                  data.icon
+                }@2x.png" alt="${data.description}" class="weather-icon">
+                ${data.description}
+            </p>
+            <p class="temp">${Math.round(data.temperature)}°C</p>
+            <p>Fühlt sich an wie: ${Math.round(data.feelsLike)}°C</p>
+            <p>Luftfeuchtigkeit: ${data.humidity}%</p>
+            <p>Windgeschwindigkeit: ${data.windSpeed} m/s</p>
+        `;
+        } catch (error) {
+          console.error("Failed to fetch current weather:", error);
+          currentWeatherDiv.innerHTML = `<p class="error-message">Aktuelle Wetterdaten konnten nicht geladen werden: ${error.message}</p>`;
+        }
+
+        // Wettervorhersage abrufen
+        try {
+          const response = await fetch(`/api/forecast/${city}`);
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(
+              errorData.message || "Fehler beim Laden der Wettervorhersage"
+            );
+          }
+          const data = await response.json();
+
+          let forecastHtml = "";
+          if (data.forecast && data.forecast.length > 0) {
+            data.forecast.forEach((day) => {
+              forecastHtml += `
+                    <div class="forecast-day">
+                        <h3>${day.dayOfWeek}, ${new Date(
+                day.date
+              ).toLocaleDateString("de-DE")}</h3>
+                        <p class="description">
+                            <img src="http://openweathermap.org/img/wn/${
+                              day.icon
+                            }@2x.png" alt="${
+                day.description
+              }" class="forecast-icon">
+                            ${day.description}
+                        </p>
+                        <p class="temp-range">Min: ${Math.round(
+                          day.tempMin
+                        )}°C / Max: ${Math.round(day.tempMax)}°C</p>
+                        <p>Luftfeuchtigkeit: ${day.humidity}%</p>
+                        <p>Wind: ${day.windSpeed} m/s</p>
+                    </div>
+                `;
+            });
+          } else {
+            forecastHtml = "<p>Keine Vorhersagedaten verfügbar.</p>";
+          }
+          forecastDiv.innerHTML = forecastHtml;
+        } catch (error) {
+          console.error("Failed to fetch forecast:", error);
+          forecastDiv.innerHTML = `<p class="error-message">Wettervorhersage konnte nicht geladen werden: ${error.message}</p>`;
+        }
+      }
+
+      const defaultCity = "<%= defaultCity %>";
+      fetchWeatherData(defaultCity);
+    </script>
+  </body>
+</html>

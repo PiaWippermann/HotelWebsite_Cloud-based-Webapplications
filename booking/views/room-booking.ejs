@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/booking.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <style></style>
+  </head>
+  <body>
+    <div class="booking-container">
+      <div>
+        <h1>Zimmerbuchung</h1>
+        <div id="room-booking-title"><%= room.name %></div>
+        <div id="room-booking-description">
+          <p><%= room.description %></p>
+          <p>Preis: <%= room.price_per_night %> € pro Nacht</p>
+        </div>
+      </div>
+      <div class="booking-form-content">
+        <h2>Buchungsdetails eingeben</h2>
+        <label for="startDate">Anreise:</label>
+        <input
+          type="text"
+          id="startDate"
+          placeholder="Datum auswählen"
+          readonly
+        />
+
+        <label for="endDate">Abreise:</label>
+        <input
+          type="text"
+          id="endDate"
+          placeholder="Datum auswählen"
+          readonly
+        />
+
+        <button type="button" id="confirmBookingBtn">Buchen</button>
+        <button
+          type="button"
+          id="confirmBookingBtn"
+          onclick="closeBookingView()"
+        >
+          Abbrechen
+        </button>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="/scripts/room-booking.js"></script>
+  </body>
+</html>

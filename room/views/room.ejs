@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/room.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="room-header">
+      <h1>Palais Vert - Zimmer</h1>
+    </div>
+    <div id="room-view">
+      <div class="room-list">
+        <% for (let i = 0; i < rooms.length; i++) { %>
+        <div class="room-container">
+          <div class="room-image fade-item">
+            <img
+              src="<%= minioUrl + rooms[i].image_url %>"
+              alt="Bild von <%= rooms[i].name %>"
+            />
+          </div>
+          <div class="room-details fade-item">
+            <h2><%= rooms[i].name %></h2>
+            <p><%= rooms[i].description %></p>
+            <p>
+              Preis pro Nacht: <%= Math.round(rooms[i].price_per_night) %> €
+            </p>
+            <button
+              type="button"
+              class="room-booking-btn"
+              onclick="bookRoom(JSON.parse(decodeURIComponent('<%= encodeURIComponent(JSON.stringify(rooms[i])) %>')))"
+            >
+              Zimmer buchen
+            </button>
+          </div>
+        </div>
+        <% } %>
+      </div>
+      <iframe id="booking-form-container"></iframe>
+      <div id="booking-form-container"></div>
+    </div>
+    <script>
+      // These variables are set by the server-side rendering
+      // and will be used in the client-side script
+      window.bookingServiceUrl = "<%= bookingServiceUrl %>";
+
+      async function bookRoom(roomId) {
+        console.log("Booking for room:", roomId, window.bookingServiceUrl);
+        loadContentIntoIframe(
+          window.bookingServiceUrl + "/room-booking/" + roomId.id
+        );
+      }
+
+      function closeBookingView() {
+        const iframe = document.getElementById("booking-form-container");
+        if (iframe) {
+          iframe.classList.remove("active");
+          iframe.src = ""; // Clear the src to stop loading
+        }
+      }
+
+      /**
+       * Function to load content into the iframe and hide the overlay
+       * @param {string} url - The URL to load into the iframe
+       */
+      function loadContentIntoIframe(url) {
+        const iframe = document.getElementById("booking-form-container");
+        iframe.src = url;
+        iframe.classList.add("active");
+      }
+
+      // Fade-in effect for items in the main section
+      const items = document.querySelectorAll(".fade-item");
+      const itemsObserver = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const el = entry.target;
+              const index = Array.from(items).indexOf(el);
+              el.style.transitionDelay = `${0.6}s`;
+              el.classList.add("visible");
+              obs.unobserve(el);
+            }
+          });
+        },
+        { threshold: 0.15 }
+      );
+
+      items.forEach((el) => itemsObserver.observe(el));
+
+      window.addEventListener("message", function (event) {
+        // Überprüfe den Ursprung der Nachricht aus Sicherheitsgründen
+        // 'http://localhost:84' ist der erwartete Ursprung deines room-Service
+        if (event.origin === window.bookingServiceUrl) {
+          // Passe den Port an, falls dein room-Service einen anderen öffentlichen Port hat
+          // Prüfe, ob die Nachricht zum Schließen des Modals gedacht ist
+          if (event.data === "closeBookingModal") {
+            closeBookingView();
+          }
+          // Du könntest hier auch andere Nachrichten vom iFrame empfangen und verarbeiten
+        } else {
+          console.warn(
+            "Nachricht von unbekanntem Ursprung geblockt:",
+            event.origin
+          );
+        }
+      });
+    </script>
+  </body>
+</html>

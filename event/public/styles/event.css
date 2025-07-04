@@ -1,0 +1,146 @@
+:root {
+  /* --- Brand Colors (Core Identity) --- */
+  --color-brand-primary: #121a18; /* Tiefes Waldgrün - Hauptfarbe */
+  --color-brand-secondary: #b89c6f; /* Gedämpftes Gold - Akzent/Sekundär */
+
+  /* --- Surface Colors (Backgrounds, Cards, Elements) --- */
+  --color-surface: #f5f1e6; /* Cremiges Elfenbein - Haupt-Hintergrund */
+  --color-surface-dark: #ececec; /* Leicht dunklerer Hintergrund für Kontrastbereiche */
+  --color-surface-light: #ffffff; /* Reinweiß für hervorstehende Elemente/Karten */
+
+  /* --- Text & Icon "On-Colors" (For readability on colored backgrounds) --- */
+  --color-on-brand-primary: #ffffff; /* Weiß auf Tiefem Waldgrün */
+  --color-on-brand-secondary: #2e2e2e; /* Dunkles Grau auf Gedämpftem Gold (oder #FFFFFF bei starkem Kontrast) */
+  --color-on-surface: #36454f; /* Dunkles Anthrazit auf Cremigem Elfenbein/Weiß */
+  --color-on-surface-light: #5a5a5a; /* Mittleres Grau für sekundären Text auf hellen Flächen */
+
+  /* --- Accent Colors (Functional & UI elements) --- */
+  --color-accent-soft-green: #87a98a; /* Sanftes Salbeigrün - Dekorative Akzente */
+  --color-accent-error: #d32f2f; /* Rot für Fehlermeldungen */
+  --color-accent-success: #388e3c; /* Grün für Erfolgsmeldungen */
+
+  /* --- Neutral/Utility Colors --- */
+  --color-text-primary: var(--color-on-surface); /* Haupttextfarbe (Standard) */
+  --color-text-secondary: var(
+    --color-on-surface-light
+  ); /* Sekundärer Text, weniger prominent */
+  --color-border: #d1d1d1; /* Allgemeine Rahmenfarbe */
+  --color-shadow: rgba(0, 0, 0, 0.1); /* Standard Schattenfarbe */
+}
+
+body,
+html {
+  font-family: "Red Hat Text", sans-serif;
+}
+
+#event-view {
+  position: absolute;
+  top: 94px;
+  height: 100%;
+}
+
+#event-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 94px;
+  background: var(--color-surface);
+  z-index: 1000;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#event-header h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  font-family: "Funnel Display", sans-serif;
+  color: var(--color-brand-secondary);
+}
+
+#booking-form-container {
+  position: fixed;
+  top: 0px;
+  right: 0;
+  width: 40%;
+  height: 100%;
+  background-color: var(--color-brand-primary);
+  color: var(--color-on-brand-primary);
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 1000;
+
+  transform: translateX(100%);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  pointer-events: none;
+  opacity: 0;
+
+  display: flex;
+  align-items: center;
+}
+
+#booking-form-container.active {
+  transform: translateX(0);
+  opacity: 0.8;
+  pointer-events: auto;
+}
+
+.event-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 100vw;
+  align-items: center;
+}
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.event-details {
+  padding: 20px 100px;
+}
+
+.event-container .event-image img {
+  border-radius: 16px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.event-image .event-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: start;
+  align-items: start;
+}
+
+.event-booking-btn {
+  padding: 10px 20px;
+  background-color: var(--color-brand-secondary);
+  border-radius: 16px;
+  color: var(--color-on-brand-primary);
+  border: none;
+}
+
+.event-booking-btn:hover {
+  background-color: var(--color-accent-soft-green);
+  cursor: pointer;
+}
+
+.fade-item {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+
+.fade-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

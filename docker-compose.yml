@@ -5,25 +5,150 @@ services:
     build: ./backend
     ports:
       - "80:80"
+    depends_on:
+      - impression
+      - room
+      - event
+    environment:
+      - IMPRESSION_SERVICE_URL=http://impression:80
+      - ROOM_SERVICE_PUBLIC_BASE_URL=${ROOM_SERVICE_PUBLIC_BASE_URL}
+      - EVENT_SERVICE_PUBLIC_BASE_URL=${EVENT_SERVICE_PUBLIC_BASE_URL}
+      - WEATHER_SERVICE_PUBLIC_BASE_URL=${WEATHER_SERVICE_PUBLIC_BASE_URL}
+      - MINIO_PORT=${MINIO_PORT}
     networks:
       - appnet
     volumes:
       - ./backend:/app
-  minio:
+
+  impression:
+    build: ./impression
+    ports:
+      - "81:80"
+    environment:
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_PORT=${MINIO_PORT}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    networks:
+      - appnet
+    volumes:
+      - ./impression:/app
+
+  room:
+    build: ./room
+    ports:
+      - "82:80"
+    environment:
+      - BOOKING_SERVICE_URL=${BOOKING_SERVICE_PUBLIC_BASE_URL}
+      - MINIO_PORT=${MINIO_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT}
+    depends_on:
+      - db
+      - miniohotel
+      - phpmyadmin
+    networks:
+      - appnet
+    volumes:
+      - ./room:/app
+
+  event:
+    build: ./event
+    ports:
+      - "83:80"
+    environment:
+      - BOOKING_SERVICE_URL=${BOOKING_SERVICE_PUBLIC_BASE_URL}
+      - MINIO_PORT=${MINIO_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT}
+    depends_on:
+      - db
+      - miniohotel
+      - phpmyadmin
+    networks:
+      - appnet
+    volumes:
+      - ./event:/app
+
+  booking:
+    build: ./booking
+    ports:
+      - "84:80"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT}
+    networks:
+      - appnet
+    volumes:
+      - ./booking:/app
+
+  weather:
+    build: ./weather
+    ports:
+      - "85:80"
+    networks:
+      - appnet
+    volumes:
+      - ./weather:/app
+
+  miniohotel:
     image: minio/minio:RELEASE.2025-04-22T22-12-26Z
     container_name: miniohotel
     ports:
-      - "9002:9000"
-      - "9003:9001" # für das MinIO-Console UI
+      - "${MINIO_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001" # MinIO-Console UI
     environment:
-      - MINIO_ROOT_USER=admin
-      - MINIO_ROOT_PASSWORD=password
-      - MINIO_ENDPOINT=minio
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_ENDPOINT=miniohotel
     command: server /data --console-address ":9001"
     restart: unless-stopped
     volumes:
       - ./data:/data
     networks:
       - appnet
+
+  db:
+    image: mysql:5.7
+    container_name: hotel_db_mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - hotel_db_data:/var/lib/mysql # Persistente Daten speichern (anderer Pfad für MySQL)
+    ports:
+      - "${DB_PORT}:3306"
+    networks:
+      - appnet
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    ports:
+      - "${PHP_ADMIN_PORT}:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: ${DB_PORT}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - appnet
+
 networks:
   appnet:
+
+volumes:
+  hotel_db_data:
