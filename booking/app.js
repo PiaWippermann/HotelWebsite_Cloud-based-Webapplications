@@ -57,21 +57,34 @@ app.get("/room-booking/:room_id", async (req, res) => {
   } finally {
     if (connection) connection.release();
   }
-
-  const room = req.body;
-
-  res.render("room-booking.ejs", {
-    room: room,
-  });
 });
 
 // endpoint to render the booking page with the given event data given in the body
 app.get("/event-booking/:event_id", async (req, res) => {
   const eventId = req.params.event_id;
 
-  res.render("event-booking.ejs", {
-    event: event,
-  });
+  // fetch the room from the database
+  let connection;
+
+  try {
+    connection = await pool.getConnection();
+
+    const query = "SELECT * FROM events WHERE id = ?";
+    const [rows] = await connection.execute(query, [eventId]);
+
+    if (rows.length > 0) {
+      res.render("event-booking.ejs", {
+        event: rows[0],
+      });
+    }
+  } catch (err) {
+    console.error("Error fetching the events:", err.message);
+    return res
+      .status(500)
+      .send("Internal Server error when fetching the events.");
+  } finally {
+    if (connection) connection.release();
+  }
 });
 
 app.listen(PORT, () => {

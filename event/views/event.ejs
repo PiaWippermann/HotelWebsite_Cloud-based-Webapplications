@@ -13,7 +13,7 @@
   </head>
   <body>
     <div id="event-header">
-      <h1>Palais Vert - Events</h1>
+      <h1>Events</h1>
     </div>
     <div id="event-view">
       <div class="event-list">
@@ -32,7 +32,7 @@
             <button
               type="button"
               class="event-booking-btn"
-              onclick="bookevent(JSON.parse(decodeURIComponent('<%= encodeURIComponent(JSON.stringify(events[i])) %>')))"
+              onclick="bookEvent(JSON.parse(decodeURIComponent('<%= encodeURIComponent(JSON.stringify(events[i])) %>')))"
             >
               Event buchen
             </button>
@@ -40,82 +40,35 @@
         </div>
         <% } %>
       </div>
-      <div id="booking-form-container"></div>
+      <iframe id="booking-form-container"></iframe>
     </div>
     <script>
       // These variables are set by the server-side rendering
       // and will be used in the client-side script
       window.bookingServiceUrl = "<%= bookingServiceUrl %>";
 
-      async function bookevent(event) {
-        console.log("Booking for event:", event, window.bookingServiceUrl);
-        try {
-          const bookingResponse = await fetch(
-            `${window.bookingServiceUrl}/event-booking`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(event), // Important: Send body as JSON string
-            }
-          );
-
-          // Check if the request was successful (HTTP status 200-299)
-          if (!bookingResponse.ok) {
-            const errorText = await bookingResponse.text();
-            console.error(
-              "Error from Booking Service:",
-              bookingResponse.status,
-              errorText
-            );
-            alert(
-              "Error retrieving the booking page: " +
-                (errorText || bookingResponse.statusText)
-            );
-            return; // Abort on error
-          }
-
-          // Extract the HTML content from the response
-          const bookingHtmlContent = await bookingResponse.text();
-          console.log("Received booking HTML:", bookingHtmlContent);
-
-          // Find the container in the DOM
-          const bookingContainer = document.getElementById(
-            "booking-form-container"
-          );
-
-          if (bookingContainer) {
-            // Insert HTML content into the container
-            bookingContainer.innerHTML = bookingHtmlContent;
-            // Make the container visible (if it was initially hidden)
-            bookingContainer.classList.add("active");
-          } else {
-            console.error(
-              "Error: The element 'booking-form-container' was not found."
-            );
-            alert(
-              "An unexpected error occurred: Could not display booking area."
-            );
-          }
-        } catch (error) {
-          console.error("Fetch error:", error);
-          alert("An unexpected error occurred.");
-        }
+      async function bookEvent(event) {
+        loadContentIntoIframe(
+          window.bookingServiceUrl + "/event-booking/" + event.id
+        );
       }
 
       function closeBookingView() {
-        const bookingContainer = document.getElementById(
-          "booking-form-container"
-        );
-        if (bookingContainer) {
-          bookingContainer.innerHTML = ""; // Clear the content
-          bookingContainer.classList.remove("active"); // Hide the container
-        } else {
-          console.error(
-            "Error: The element 'booking-form-container' was not found."
-          );
+        const iframe = document.getElementById("booking-form-container");
+        if (iframe) {
+          iframe.classList.remove("active");
+          iframe.src = ""; // Clear the src to stop loading
         }
+      }
+
+      /**
+       * Function to load content into the iframe and hide the overlay
+       * @param {string} url - The URL to load into the iframe
+       */
+      function loadContentIntoIframe(url) {
+        const iframe = document.getElementById("booking-form-container");
+        iframe.src = url;
+        iframe.classList.add("active");
       }
 
       // Fade-in effect for items in the main section
@@ -136,6 +89,24 @@
       );
 
       items.forEach((el) => itemsObserver.observe(el));
+
+      window.addEventListener("message", function (event) {
+        // Überprüfe den Ursprung der Nachricht aus Sicherheitsgründen
+        // 'http://localhost:84' ist der erwartete Ursprung deines room-Service
+        if (event.origin === window.bookingServiceUrl) {
+          // Passe den Port an, falls dein room-Service einen anderen öffentlichen Port hat
+          // Prüfe, ob die Nachricht zum Schließen des Modals gedacht ist
+          if (event.data === "closeBookingModal") {
+            closeBookingView();
+          }
+          // Du könntest hier auch andere Nachrichten vom iFrame empfangen und verarbeiten
+        } else {
+          console.warn(
+            "Nachricht von unbekanntem Ursprung geblockt:",
+            event.origin
+          );
+        }
+      });
     </script>
   </body>
 </html>

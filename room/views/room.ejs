@@ -13,7 +13,7 @@
   </head>
   <body>
     <div id="room-header">
-      <h1>Palais Vert - Zimmer</h1>
+      <h1>Zimmer</h1>
     </div>
     <div id="room-view">
       <div class="room-list">
@@ -43,17 +43,15 @@
         <% } %>
       </div>
       <iframe id="booking-form-container"></iframe>
-      <div id="booking-form-container"></div>
     </div>
     <script>
       // These variables are set by the server-side rendering
       // and will be used in the client-side script
       window.bookingServiceUrl = "<%= bookingServiceUrl %>";
 
-      async function bookRoom(roomId) {
-        console.log("Booking for room:", roomId, window.bookingServiceUrl);
+      async function bookRoom(room) {
         loadContentIntoIframe(
-          window.bookingServiceUrl + "/room-booking/" + roomId.id
+          window.bookingServiceUrl + "/room-booking/" + room.id
         );
       }
 
