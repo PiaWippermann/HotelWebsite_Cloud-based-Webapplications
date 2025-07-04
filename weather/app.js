@@ -15,9 +15,8 @@ const __dirname = path.dirname(__filename);
 
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const WEATHER_API_BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
-const FORECAST_API_ONE_CALL_URL =
-  "https://api.openweathermap.org/data/3.0/onecall";
-const GEOCODING_API_URL = "http://api.openweathermap.org/geo/1.0/direct";
+const FORECAST_API_5_DAY_3_HOUR_URL =
+  "https://api.openweathermap.org/data/2.5/forecast";
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -179,12 +178,10 @@ app.get("/api/forecast/:city", async (req, res) => {
     console.error("Error fetching forecast data:", error.message);
     if (error.response) {
       console.error("Forecast API response error:", error.response.data);
-      res
-        .status(error.response.status)
-        .json({
-          message: "Error from weather API",
-          details: error.response.data,
-        });
+      res.status(error.response.status).json({
+        message: "Error from weather API",
+        details: error.response.data,
+      });
     } else {
       res.status(500).json({ message: "Failed to fetch forecast data." });
     }
